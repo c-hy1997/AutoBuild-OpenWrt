@@ -17,7 +17,7 @@ on:
     paths:
       - 'diffconfig.config'
   schedule:
-    - cron: 30 1 2 *
+    - cron: 30 01 2 * *
   watch:
     types: [started]
 
