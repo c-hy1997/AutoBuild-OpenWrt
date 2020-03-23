@@ -95,7 +95,10 @@ jobs:
         rm -rf package/lean/luci-app-v2ray-server
 
     - name: Install Feeds
-      run: cd openwrt && ./scripts/feeds install -a
+      run: |
+        cd openwrt
+        ./scripts/feeds install -a
+        ./scripts/feeds install libpam
 
     - name: Load Custom Configuration
       run: |
