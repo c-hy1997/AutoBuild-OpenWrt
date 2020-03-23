@@ -98,7 +98,6 @@ jobs:
       run: |
         cd openwrt
         ./scripts/feeds install -a
-        ./scripts/feeds install libpam
 
     - name: Load Custom Configuration
       run: |
