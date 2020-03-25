@@ -11,11 +11,11 @@ name: Build OpenWrt
 on:
   release:
     types: [published]
-  push:
-    branches:
-      - master
-    paths:
-      - 'diffconfig.config'
+#  push:
+#    branches:
+#      - master
+#    paths:
+#      - 'diffconfig.config'
   schedule:
     - cron: 30 01 2 * *
   watch:
