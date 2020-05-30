@@ -70,10 +70,10 @@ jobs:
         cd openwrt
         rm feeds.conf.default
 
-    #- name: Import External Feeds File
-    #  run: |
-    #    [ -e files ] && mv files openwrt/files
-    #    [ -e $FEED_FILE ] && mv $FEED_FILE openwrt/feeds.conf.default
+    - name: Import External Feeds File
+      run: |
+        [ -e files ] && mv files openwrt/files
+        [ -e $FEED_FILE ] && mv $FEED_FILE openwrt/feeds.conf.default
 
     - name: Update Feeds
       run: cd openwrt && ./scripts/feeds update -a
