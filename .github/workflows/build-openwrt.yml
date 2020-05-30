@@ -70,34 +70,40 @@ jobs:
         cd openwrt
         rm feeds.conf.default
 
-    - name: Import External Feeds File
-      run: |
-        [ -e files ] && mv files openwrt/files
-        [ -e $FEED_FILE ] && mv $FEED_FILE openwrt/feeds.conf.default
+    #- name: Import External Feeds File
+    #  run: |
+    #    [ -e files ] && mv files openwrt/files
+    #    [ -e $FEED_FILE ] && mv $FEED_FILE openwrt/feeds.conf.default
 
     - name: Update Feeds
       run: cd openwrt && ./scripts/feeds update -a
-
-    - name: Delete Incompatible Packges
-      run: |
-        cd openwrt
-        rm -rf feeds/lienol/lienol/ipt2socks
-        rm -rf feeds/lienol/lienol/shadowsocksr-libev
-        rm -rf feeds/lienol/lienol/pdnsd-alt
-        rm -rf feeds/lienol/package/verysync
-        rm -rf feeds/lienol/lienol/luci-app-verysync
-        rm -rf package/lean/kcptun
-        rm -rf package/lean/trojan
-        rm -rf package/lean/v2ray
-        rm -rf package/lean/luci-app-kodexplorer
-        rm -rf package/lean/luci-app-pppoe-relay
-        rm -rf package/lean/luci-app-pptp-server
-        rm -rf package/lean/luci-app-v2ray-server
+        
+    #- name: Delete Incompatible Packges
+    #  run: |
+    #    cd openwrt
+    #    rm -rf feeds/lienol/lienol/ipt2socks
+    #    rm -rf feeds/lienol/lienol/shadowsocksr-libev
+    #    rm -rf feeds/lienol/lienol/pdnsd-alt
+    #    rm -rf feeds/lienol/package/verysync
+    #    rm -rf feeds/lienol/lienol/luci-app-verysync
+    #    rm -rf package/lean/kcptun
+    #    rm -rf package/lean/trojan
+    #    rm -rf package/lean/v2ray
+    #    rm -rf package/lean/luci-app-kodexplorer
+    #    rm -rf package/lean/luci-app-pppoe-relay
+    #    rm -rf package/lean/luci-app-pptp-server
+    #    rm -rf package/lean/luci-app-v2ray-server
 
     - name: Install Feeds
       run: |
         cd openwrt
         ./scripts/feeds install -a
+           
+    - name: Add Hello World
+      run: |
+        cd /openwrt/package/lean/        
+        git clone https://github.com/jerrykuku/lua-maxminddb.git
+        git clone https://github.com/jerrykuku/luci-app-vssr.git   
 
     - name: Load Custom Configuration
       run: |
