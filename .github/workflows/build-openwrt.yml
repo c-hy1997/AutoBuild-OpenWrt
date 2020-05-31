@@ -24,10 +24,10 @@ on:
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede
   REPO_BRANCH: master
+  FEEDS_CONF: feeds.conf.default
   CONFIG_FILE: diffconfig.config
-  FEED_FILE: feedsfile
-  DIY_SH: diy.sh
-  FREE_UP_DISK: true
+  DIY_P1_SH: diy-part1.sh
+  DIY_P2_SH: diy-part2.sh
   SSH_ACTIONS: false
   UPLOAD_BIN_DIR: true
   UPLOAD_FIRMWARE: true
@@ -57,22 +57,26 @@ jobs:
         sudo mkdir -p /workdir
         sudo chown $USER:$GROUPS /workdir
 
-    - name: Clone Source Code
-      run: git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
-
-    - name: Delete the Feeds File
+    - name: Clone source code
+      working-directory: /workdir
       run: |
+        df -hT $PWD
+        git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
+        ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
+
+    - name: Load custom feeds
+      run: |
+        [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
+        chmod +x $DIY_P1_SH
         cd openwrt
-        rm feeds.conf.default
-
-    - name: Import External Feeds File
-      run: |
-        [ -e files ] && mv files openwrt/files
-        [ -e $FEED_FILE ] && mv $FEED_FILE openwrt/feeds.conf.default
+        $GITHUB_WORKSPACE/$DIY_P1_SH
 
     - name: Update Feeds
       run: cd openwrt && ./scripts/feeds update -a
-        
+      
+    - name: Install Feeds
+      run: cd openwrt && ./scripts/feeds install -a
+             
     #- name: Delete Incompatible Packges
     #  run: |
     #    cd openwrt
@@ -88,30 +92,25 @@ jobs:
     #    rm -rf package/lean/luci-app-pppoe-relay
     #    rm -rf package/lean/luci-app-pptp-server
     #    rm -rf package/lean/luci-app-v2ray-server
-
-    - name: Install Feeds
-      run: |
-        cd openwrt
-        ./scripts/feeds install -a
            
-    - name: Add Hello World
-      run: |
-        cd openwrt     
-        cd package
-        cd lean
-        git clone https://github.com/jerrykuku/lua-maxminddb.git
-        git clone https://github.com/jerrykuku/luci-app-vssr.git   
-
-    - name: Load Custom Configuration
+    #- name: Add Hello World
+    #  run: |
+    #    cd openwrt     
+    #    cd package
+    #    cd lean
+    #    git clone https://github.com/jerrykuku/lua-maxminddb.git
+    #    git clone https://github.com/jerrykuku/luci-app-vssr.git   
+        
+    - name: Load custom configuration
       run: |
         [ -e files ] && mv files openwrt/files
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
-        chmod +x $DIY_SH
+        chmod +x $DIY_P2_SH
         cd openwrt
-        ../$DIY_SH
+        $GITHUB_WORKSPACE/$DIY_P2_SH
         make defconfig
 
-    - name: SSH Connection to Actions
+    - name: SSH connection to Actions
       uses: P3TERX/debugger-action@master
       if: env.SSH_ACTIONS == 'true' || contains(github.event.action, 'ssh')
 
