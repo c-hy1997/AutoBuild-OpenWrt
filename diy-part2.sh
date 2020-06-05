@@ -12,7 +12,7 @@
 sed -i 's/192.168.1.1/192.168.1.5/g' package/base-files/files/bin/config_generate
 
 #Add Hello World
-cd package
-cd lean
-git clone https://github.com/jerrykuku/lua-maxminddb.git 
-git clone https://github.com/jerrykuku/luci-app-vssr.git 
+#cd package
+#cd lean
+#git clone https://github.com/jerrykuku/lua-maxminddb.git 
+#git clone https://github.com/jerrykuku/luci-app-vssr.git 
